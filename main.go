@@ -32,6 +32,13 @@ func sendKey(s uint8) {
 	i.inputType = 1 //INPUT_KEYBOARD
 
 	i.ki.wVk = uint16(s)
+	i.ki.dwFlags = 0
+	sendInputProc.Call(
+		uintptr(1),
+		uintptr(unsafe.Pointer(&i)),
+		uintptr(unsafe.Sizeof(i)),
+	)
+	i.ki.dwFlags = 2
 	sendInputProc.Call(
 		uintptr(1),
 		uintptr(unsafe.Pointer(&i)),
@@ -59,7 +66,6 @@ func main() {
 
 		responseData := response.Data()
 
-
 		//Reverse byte if needed
 		// for i, j := 0, len(responseData)-1; i < j; i, j = i+1, j-1 {
 		// 	responseData[i], responseData[j] = responseData[j], responseData[i]
@@ -76,7 +82,7 @@ func main() {
 
 		//sendKey("A")
 		card.Disconnect()
-		fmt.Printf("Please remove card")
+		fmt.Printf("Please remove card\n")
 		reader.WaitUntilCardRemoved()
 	}
 	return
